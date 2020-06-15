@@ -1,0 +1,23 @@
+.container {
+  background: #ddd;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  padding: 12px;
+}
+
+.container > :last-child {
+  margin-bottom: 0;
+}
+
+.title {
+  color: #999;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.content {
+  color: #000;
+  font-size: 20px;
+  margin: 0 0 12px
+}

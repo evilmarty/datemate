@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  padding: 20px;
+  height: auto;
+}
+
+.header {
+  text-align: center;
+  margin: 12px 0;
+}
+
+.footer {
+  font-size: 10px;
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.subtitle {
+  font-size: 10px;
+}
+
+.input {
+  flex: 0;
+  margin: 12px 0;
+}
+
+.result {
+  flex: 1;
+  margin: 12px 0;
+  overflow-y: auto;
+}
