@@ -18,7 +18,7 @@ function useHash(callback) {
 }
 
 function hashValue() {
-  return location.hash.replace('#', '')
+  return decodeURIComponent(location.hash.replace('#', ''))
 }
 
 export default function() {
@@ -31,7 +31,7 @@ export default function() {
     const date = parseDate(query)
 
     if (date) {
-      location.hash = query
+      location.hash = encodeURIComponent(query)
     }
 
     setQuery(query)
