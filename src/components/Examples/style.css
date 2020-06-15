@@ -1,0 +1,16 @@
+.container {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: inline;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0.6rem;
+}
+
+.item a {
+  text-decoration: none;
+}

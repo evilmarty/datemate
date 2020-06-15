@@ -16,7 +16,7 @@ export default function({ onSubmit = K, onKeyDown = K, className = '', isInvalid
 
   return (
     <span className={`${style.container} ${className}`}>
-      <input className={`${style.input} ${isInvalid ? style.invalid : style.valid}`} onKeyDown={handleKeyDown} {...props}/>
+      <input type="search" className={`${style.input} ${isInvalid ? style.invalid : style.valid}`} onKeyDown={handleKeyDown} {...props}/>
     </span>
   )
 }
