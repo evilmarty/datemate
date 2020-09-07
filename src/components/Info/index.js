@@ -6,6 +6,7 @@ import {
   isValid
 } from 'date-fns'
 import style from './style.css'
+import { getLocale } from '../../utils'
 
 const simpleFormat = (date, _, ...args) => format(date, ...args)
 
@@ -13,91 +14,92 @@ const DETAILS = [
   {
     label: 'date',
     process: simpleFormat,
-    options: ['P'],
+    args: ['P'],
   },
   {
     label: 'time',
     process: simpleFormat,
-    options: ['p'],
+    args: ['p'],
   },
   {
     label: 'datetime',
     process: simpleFormat,
-    options: ['Pp'],
+    args: ['Pp'],
   },
   {
     label: 'relative year',
     process: formatDistanceStrict,
-    options: [{unit: 'year', addSuffix: true}],
+    options: {unit: 'year', addSuffix: true},
   },
   {
     label: 'relative month',
     process: formatDistanceStrict,
-    options: [{unit: 'month', addSuffix: true}],
+    options: {unit: 'month', addSuffix: true},
   },
   {
     label: 'relative day',
     process: formatDistanceStrict,
-    options: [{unit: 'day', addSuffix: true}],
+    options: {unit: 'day', addSuffix: true},
   },
   {
     label: 'relative hour',
     process: formatDistanceStrict,
-    options: [{unit: 'hour', addSuffix: true}],
+    options: {unit: 'hour', addSuffix: true},
   },
   {
     label: 'relative minute',
     process: formatDistanceStrict,
-    options: [{unit: 'minute', addSuffix: true}],
+    options: {unit: 'minute', addSuffix: true},
   },
   {
     label: 'relative second',
     process: formatDistanceStrict,
-    options: [{unit: 'second', addSuffix: true}],
+    options: {unit: 'second', addSuffix: true},
   },
   {
     label: 'weekday',
     process: simpleFormat,
-    options: ['cccc'],
+    args: ['cccc'],
   },
   {
     label: 'month',
     process: simpleFormat,
-    options: ['LLLL'],
+    args: ['LLLL'],
   },
   {
     label: 'day',
     process: simpleFormat,
-    options: ['do'],
+    args: ['do'],
   },
   {
     label: 'year',
     process: simpleFormat,
-    options: ['y'],
+    args: ['y'],
   },
   {
     label: 'quarter',
     process: simpleFormat,
-    options: ['qo'],
+    args: ['qo'],
   },
   {
     label: 'era',
     process: simpleFormat,
-    options: ['GGGG'],
+    args: ['GGGG'],
   },
   {
     label: 'timezone',
     process: simpleFormat,
-    options: ['xxxxx'],
+    args: ['xxxxx'],
   },
 ]
 
-export default function({ date, baseDate, fallback = null, className = '' }) {
+export default function({ languages, date, baseDate, fallback = null, className = '' }) {
   if (!isValid(date)) {
     return fallback
   }
 
-  const details = DETAILS.map(({ label, process, options }) => ({ label, value: process(date, baseDate, ...options) }))
+  const locale = getLocale(...languages)
+  const details = DETAILS.map(({ label, process, args = [], options = {} }) => ({ label, value: process(date, baseDate, ...args, { ...options, locale }) }))
 
   return (
     <dl className={`${style.container} ${className}`}>

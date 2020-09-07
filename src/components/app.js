@@ -1,6 +1,6 @@
 import { h } from 'preact'
 import { useState, useCallback, useEffect, useMemo } from 'preact/hooks'
-import parseDate from '../date'
+import { parseDate } from '../utils'
 import Main from './Main'
 
 function useInterval(callback, timeout) {
@@ -26,6 +26,7 @@ export default function() {
   const [baseDate, setBaseDate] = useState(Date.now())
   const [query, setQuery] = useState(hashValue())
   const date = useMemo(() => parseDate(query), [query])
+  const languages = navigator.languages || ['en']
 
   const handleInput = useCallback(event => {
     const query = event.target.value.trim()
@@ -41,5 +42,5 @@ export default function() {
   useInterval(() => setBaseDate(Date.now()), 1000)
   useHash(() => setQuery(hashValue()))
 
-  return <Main baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
+  return <Main languages={languages} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
 }
