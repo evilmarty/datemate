@@ -4,8 +4,9 @@ import parseDate from '../date'
 import Main from './Main'
 
 function useInterval(callback, timeout) {
+  const wrappedCallback = requestAnimationFrame.bind(null, callback)
   return useEffect(() => {
-    const interval = setInterval(callback, timeout)
+    const interval = setInterval(wrappedCallback, timeout)
     return () => clearInterval(interval)
   })
 }
