@@ -102,13 +102,17 @@ export default function({ languages, date, baseDate, fallback = null, className 
   const details = DETAILS.map(({ label, process, args = [], options = {} }) => ({ label, value: process(date, baseDate, ...args, { ...options, locale }) }))
 
   return (
-    <dl className={`${style.container} ${className}`}>
-      {details.map(item => (
-        <Fragment>
-          <dt className={style.title}>{item.label}</dt>
-          <dd className={style.content}>{item.value}</dd>
-        </Fragment>
-      ))}
-    </dl>
+    <Fragment>
+      <dl className={`${style.container} ${className}`}>
+        {details.map(item => (
+          <Fragment>
+            <dt className={style.title}>{item.label}</dt>
+            <dd className={style.content}>
+              <input onClick={event => { event.target.select(); document.execCommand('copy') }} className={style.input} value={item.value} readOnly/>
+            </dd>
+          </Fragment>
+        ))}
+      </dl>
+    </Fragment>
   )
 }

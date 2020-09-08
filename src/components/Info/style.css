@@ -19,5 +19,14 @@
 .content {
   color: #000;
   font-size: 20px;
-  margin: 0 0 12px
+  margin: 0 0 12px;
+}
+
+.input {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  display: block;
+  font: inherit;
+  width: 100%;
 }
