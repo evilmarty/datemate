@@ -24,7 +24,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
-    "preact-cli": "^2.2.1",
+    "preact-cli": "^3.0.1",
     "preact-render-spy": "^1.2.1",
     "sirv-cli": "^0.4.5",
     "serialize-javascript": ">=2.1.1",
@@ -35,9 +35,7 @@
   "dependencies": {
     "chrono-node": "^1.4.6",
     "date-fns": "^2.14.0",
-    "preact": "^10.3.2",
-    "preact-render-to-string": "^5.1.4",
-    "preact-router": "^3.2.1"
+    "preact": "^10.4.8"
   },
   "jest": {
     "preset": "jest-preset-preact",
