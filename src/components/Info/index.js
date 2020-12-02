@@ -27,6 +27,11 @@ const DETAILS = [
     args: ['Pp'],
   },
   {
+    label: 'timestamp',
+    process: simpleFormat,
+    args: ['T'],
+  },
+  {
     label: 'relative year',
     process: formatDistanceStrict,
     options: {unit: 'year', addSuffix: true},
