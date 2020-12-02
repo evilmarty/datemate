@@ -24,13 +24,13 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "jest-preset-preact": "^1.0.0",
+    "mem": ">=4.0.0",
+    "mime": ">=1.4.1",
     "preact-cli": "^3.0.1",
     "preact-render-spy": "^1.2.1",
-    "sirv-cli": "^0.4.5",
     "serialize-javascript": ">=2.1.1",
-    "mem": ">=4.0.0",
-    "webpack-dev-server": ">=3.1.11",
-    "mime": ">=1.4.1"
+    "sirv-cli": "^0.4.5",
+    "webpack-dev-server": ">=3.1.11"
   },
   "dependencies": {
     "chrono-node": "^1.4.6",
