@@ -27,9 +27,29 @@ const DETAILS = [
     args: ['Pp'],
   },
   {
-    label: 'timestamp',
+    label: 'weekday',
     process: simpleFormat,
-    args: ['T'],
+    args: ['cccc'],
+  },
+  {
+    label: 'month',
+    process: simpleFormat,
+    args: ['LLLL'],
+  },
+  {
+    label: 'day',
+    process: simpleFormat,
+    args: ['do'],
+  },
+  {
+    label: 'year',
+    process: simpleFormat,
+    args: ['y'],
+  },
+  {
+    label: 'quarter',
+    process: simpleFormat,
+    args: ['qo'],
   },
   {
     label: 'relative year',
@@ -62,29 +82,9 @@ const DETAILS = [
     options: {unit: 'second', addSuffix: true},
   },
   {
-    label: 'weekday',
+    label: 'timestamp',
     process: simpleFormat,
-    args: ['cccc'],
-  },
-  {
-    label: 'month',
-    process: simpleFormat,
-    args: ['LLLL'],
-  },
-  {
-    label: 'day',
-    process: simpleFormat,
-    args: ['do'],
-  },
-  {
-    label: 'year',
-    process: simpleFormat,
-    args: ['y'],
-  },
-  {
-    label: 'quarter',
-    process: simpleFormat,
-    args: ['qo'],
+    args: ['T'],
   },
   {
     label: 'era',
