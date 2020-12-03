@@ -6,7 +6,6 @@ import {
   isValid
 } from 'date-fns'
 import style from './style.css'
-import { getLocale } from '../../utils'
 
 const simpleFormat = (date, _, ...args) => format(date, ...args)
 
@@ -98,12 +97,11 @@ const DETAILS = [
   },
 ]
 
-export default function({ languages, date, baseDate, fallback = null, className = '' }) {
+export default function({ locale, date, baseDate, fallback = null, className = '' }) {
   if (!isValid(date)) {
     return fallback
   }
 
-  const locale = getLocale(...languages)
   const details = DETAILS.map(({ label, process, args = [], options = {} }) => ({ label, value: process(date, baseDate, ...args, { ...options, locale }) }))
 
   return (

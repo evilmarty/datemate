@@ -1,7 +1,10 @@
 import { h } from 'preact'
 import { useState, useCallback, useEffect, useMemo } from 'preact/hooks'
-import { parseDate } from '../utils'
+import { parseDate, getLocale } from '../utils'
 import Main from './Main'
+
+const languages = navigator.languages || ['en']
+const locale = getLocale(...languages)
 
 function useInterval(callback, timeout) {
   const wrappedCallback = requestAnimationFrame.bind(null, callback)
@@ -26,7 +29,6 @@ export default function() {
   const [baseDate, setBaseDate] = useState(Date.now())
   const [query, setQuery] = useState(hashValue())
   const date = useMemo(() => parseDate(query), [query])
-  const languages = navigator.languages || ['en']
 
   const handleInput = useCallback(event => {
     const query = event.target.value.trim()
@@ -42,5 +44,5 @@ export default function() {
   useInterval(() => setBaseDate(Date.now()), 1000)
   useHash(() => setQuery(hashValue()))
 
-  return <Main languages={languages} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
+  return <Main locale={locale} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
 }
