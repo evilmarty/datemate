@@ -15,7 +15,9 @@ export default function() {
   const [baseDate, setBaseDate] = useState(Date.now())
   const [query, setQuery] = useHash()
   const date = useMemo(() => parseDate(query), [query])
-  const isInvalid = query !== '' && date === null
+  const isBlank = query === ''
+  const isInvalid = !isBlank && date === null
+  const Component = isBlank ? Examples : Info
 
   const handleInput = useCallback(event => {
     setQuery(event.target.value)
@@ -29,8 +31,7 @@ export default function() {
         <h1 className={style.title}>Date Mate</h1>
       </header>
       <Input placeholder="Enter a date" value={query} onInput={handleInput} className={style.input} isInvalid={isInvalid}/>
-      <Examples locale={LOCALE}/>
-      <Info locale={LOCALE} baseDate={baseDate} date={date} className={style.result}/>
+      <Component locale={LOCALE} baseDate={baseDate} date={date} className={style.result}/>
       <footer className={style.footer}>
         Made by <a href="https://marty.zalega.me" target="_blank">Marty Zalega</a>. Code on <a href="https://github.com/evilmarty/datemate">GitHub</a>.
       </footer>

@@ -12,16 +12,12 @@ function setHash(hash) {
   location.hash = encodeURIComponent(hash)
 }
 
-function getHash(defaultHash) {
-  if (location.hash === '') {
-    return defaultHash
-  } else {
-    return decodeURIComponent(location.hash.replace('#', ''))
-  }
+function getHash() {
+  return decodeURIComponent(location.hash.replace('#', ''))
 }
 
-export function useHash(defaultHash = '') {
-  const [value, setValue] = useState(getHash(defaultHash))
+export function useHash() {
+  const [value, setValue] = useState(getHash())
 
   useEffect(() => {
     function callback() {

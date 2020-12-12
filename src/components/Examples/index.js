@@ -43,10 +43,12 @@ export default function({ locale }) {
   }, [locale])
 
   return (
-    <ul className={style.container}>
-      {examples.map(example => (
-        <li className={style.item}><a href={`#${encodeURIComponent(example)}`}>{example}</a></li>
-      ))}
-    </ul>
+    <div className={style.container}>
+      <ul className={style.list}>
+        {examples.map(example => (
+          <li className={style.item}><a href={`#${encodeURIComponent(example)}`}>{example}</a></li>
+        ))}
+      </ul>
+    </div>
   )
 }
