@@ -36,14 +36,17 @@ function parseTimestamp(timestamp) {
 }
 
 export function parseDate(value) {
-  if (isValid(value)) {
+  if (typeof(value) === 'string') {
+    return _parseDate(value)
+  }
+  else if (isValid(value)) {
     return value
   }
   else if (isTimestamp(value)) {
     return parseTimestamp(value)
   }
   else {
-    return _parseDate(value)
+    return null
   }
 }
 
