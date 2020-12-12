@@ -7,47 +7,47 @@ import {
 } from 'date-fns'
 import style from './style.css'
 
-const simpleFormat = (date, _, ...args) => format(date, ...args)
+const SIMPLE_FORMAT = (date, _, ...args) => format(date, ...args)
 
 const DETAILS = [
   {
     label: 'date',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['P'],
   },
   {
     label: 'time',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['p'],
   },
   {
     label: 'datetime',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['Pp'],
   },
   {
     label: 'weekday',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['cccc'],
   },
   {
     label: 'month',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['LLLL'],
   },
   {
     label: 'day',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['do'],
   },
   {
     label: 'year',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['y'],
   },
   {
     label: 'quarter',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['qo'],
   },
   {
@@ -82,17 +82,17 @@ const DETAILS = [
   },
   {
     label: 'timestamp',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['T'],
   },
   {
     label: 'era',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['GGGG'],
   },
   {
     label: 'timezone',
-    process: simpleFormat,
+    process: SIMPLE_FORMAT,
     args: ['xxxxx'],
   },
 ]

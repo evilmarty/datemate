@@ -3,27 +3,8 @@ import { useState, useCallback, useEffect, useMemo } from 'preact/hooks'
 import { parseDate, getLocale } from '../utils'
 import Main from './Main'
 
-const languages = navigator.languages || ['en']
-const locale = getLocale(...languages)
-
-function useInterval(callback, timeout) {
-  const wrappedCallback = requestAnimationFrame.bind(null, callback)
-  return useEffect(() => {
-    const interval = setInterval(wrappedCallback, timeout)
-    return () => clearInterval(interval)
-  })
-}
-
-function useHash(callback) {
-  useEffect(() => {
-    window.addEventListener('hashchange', callback)
-    return () => window.removeEventListener('hashchange', callback)
-  })
-}
-
-function hashValue() {
-  return decodeURIComponent(location.hash.replace('#', ''))
-}
+const LANGUAGES = navigator.languages || ['en']
+const LOCALE = getLocale(...LANGUAGES)
 
 export default function() {
   const [baseDate, setBaseDate] = useState(Date.now())
@@ -44,5 +25,5 @@ export default function() {
   useInterval(() => setBaseDate(Date.now()), 1000)
   useHash(() => setQuery(hashValue()))
 
-  return <Main locale={locale} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
+  return <Main locale={LOCALE} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
 }

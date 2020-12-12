@@ -3,16 +3,16 @@ import { useMemo } from 'preact/hooks'
 import { sub, formatRelative, formatDistance } from 'date-fns'
 import style from './style.css'
 
-const daysIndex = [0, 1, 2, 3, 4, 5, 6]
+const DAYS_INDEX = [0, 1, 2, 3, 4, 5, 6]
 const monthsIndex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
-const defaultExamples = [
+const DEFAULT_EXAMPLES = [
   'Today',
   'Tomorrow',
   'Yesterday',
 ]
 
-const defaultSuffixes = [
+const DEFAULT_SUFFIXES = [
   'Week',
   'Month',
   'Year',
@@ -26,14 +26,14 @@ function sample(items) {
 export default function({ locale }) {
   const examples = useMemo(() => {
     const suffixes = [
-      ...defaultSuffixes,
-      ...daysIndex.map(locale.localize.day),
+      ...DEFAULT_SUFFIXES,
+      ...DAYS_INDEX.map(locale.localize.day),
       ...monthsIndex.map(locale.localize.month),
     ]
     const now = Date.now()
 
     return [
-      ...defaultExamples,
+      ...DEFAULT_EXAMPLES,
       `Last ${sample(suffixes)}`,
       `Next ${sample(suffixes)}`,
       formatDistance(sub(now, { hours: 1000 * Math.random() }), now, { locale, addSuffix: true }),
