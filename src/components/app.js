@@ -1,6 +1,7 @@
 import { h } from 'preact'
 import { useState, useCallback, useEffect, useMemo } from 'preact/hooks'
 import { parseDate, getLocale } from '../utils'
+import { useInterval, useHash } from '../hooks'
 import Main from './Main'
 
 const LANGUAGES = navigator.languages || ['en']
@@ -8,22 +9,14 @@ const LOCALE = getLocale(...LANGUAGES)
 
 export default function() {
   const [baseDate, setBaseDate] = useState(Date.now())
-  const [query, setQuery] = useState(hashValue())
+  const [query, setQuery] = useHash()
   const date = useMemo(() => parseDate(query), [query])
 
   const handleInput = useCallback(event => {
-    const query = event.target.value.trim()
-    const date = parseDate(query)
-
-    if (date) {
-      location.hash = encodeURIComponent(query)
-    }
-
-    setQuery(query)
+    setQuery(event.target.value)
   }, [setQuery])
 
   useInterval(() => setBaseDate(Date.now()), 1000)
-  useHash(() => setQuery(hashValue()))
 
-  return <Main locale={LOCALE} baseDate={baseDate} value={[query, date]} onInput={handleInput}/>
+  return <Main locale={LOCALE} baseDate={baseDate} query={query} date={date} onInput={handleInput}/>
 }
