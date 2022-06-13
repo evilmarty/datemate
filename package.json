@@ -4,44 +4,23 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "preact build --production --clean --no-prerender",
-    "serve": "sirv build --cors --single",
-    "dev": "preact watch",
-    "lint": "eslint src",
-    "test": "jest"
-  },
-  "eslintConfig": {
-    "extends": "preact",
-    "ignorePatterns": [
-      "build/"
-    ]
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build --outDir build",
+    "serve": "vite preview"
   },
   "devDependencies": {
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-preact-pure": "^2.0.0",
-    "eslint": "^6.0.1",
-    "eslint-config-preact": "^1.1.0",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^24.9.0",
-    "jest-preset-preact": "^1.0.0",
-    "mem": ">=4.0.0",
-    "mime": ">=1.4.1",
-    "preact-cli": "^3.0.1",
-    "preact-render-spy": "^1.2.1",
-    "serialize-javascript": ">=2.1.1",
-    "sirv-cli": "^0.4.5",
-    "webpack-dev-server": ">=3.1.11"
+    "@tailwindcss/forms": "^0.5.2",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.1",
+    "typescript": "^4.6.4",
+    "vite": "^2.9.9",
+    "vite-plugin-solid": "^2.2.6"
   },
   "dependencies": {
-    "chrono-node": "^2.2.4",
-    "date-fns": "^2.14.0",
-    "preact": "^10.4.8"
-  },
-  "jest": {
-    "preset": "jest-preset-preact",
-    "setupFiles": [
-      "<rootDir>/tests/__mocks__/browserMocks.js",
-      "<rootDir>/tests/__mocks__/setupTests.js"
-    ]
+    "chrono-node": "^2.3.8",
+    "date-fns": "^2.28.0",
+    "solid-js": "^1.4.2"
   }
 }
