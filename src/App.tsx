@@ -61,7 +61,7 @@ function App(): Component {
           </DataList>
         </div>
       </Show>
-      <Dialog modal={showInfo()} footer={<Button onClick={() => setShowInfo(false)} class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Close</Button>} title="About" icon="information-circle">
+      <Dialog modal={showInfo()} footer={<Button onClick={() => setShowInfo(false)}>Close</Button>} title="About" icon="information-circle">
         <div class="text-sm text-gray-500 space-y-2">
           <p>Date Mate is a helpful app to better understand dates and time. Visit the <a href="https://github.com/evilmarty/datemate" class="text-blue-600">GitHub</a> repository to contribute or report an issue.</p>
           <p>This was made by <a href="https://marty.zalega.me" class="text-blue-600">Marty Zalega</a>.</p>

@@ -52,7 +52,7 @@ interface DataListProps {
 export function DataList(props: DataListProps): Component {
   const resolved = children(() => Array.isArray(props.children) ? props.children : [props.children])
   return (
-    <dl class="bg-white dark:bg-black dark:border dark:border-gray-900 shadow overflow-hidden sm:rounded-lg">
+    <dl class="bg-white dark:bg-black dark:border dark:border-gray-800 shadow overflow-hidden sm:rounded-lg">
       <For each={resolved()}>
         {child => (
           <div class="bg-white dark:bg-black odd:bg-gray-50 dark:odd:bg-gray-900 px-4 py-5 sm:px-6 sm:grid sm:grid-cols-3 sm:gap-4 flex-1">
@@ -102,7 +102,7 @@ interface ButtonProps {
 export function Button(props: ButtonProps): Component {
   const [local, others] = splitProps(props, ['icon', 'children'])
   return (
-    <button {...others} class="inline-flex items-center p-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" type="button">
+    <button {...others} class="inline-flex items-center p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 justify-center" type="button">
       <HeroIcon name={local.icon} class="h-5 w-5 text-gray-500"/>
       {local.children}
     </button>
@@ -193,22 +193,22 @@ export function Dialog(props: DialogProps): Component {
     }
   })
   return (
-    <dialog onClose={props.onClose} onCancel={props.onClose} ref={el} class="relative p-0 bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+    <dialog onCancel={props.onClose} ref={el} class="absolute p-0 rounded-lg text-left overflow-hidden backdrop:bg-white/70 dark:backdrop:bg-white/10 bg-white dark:bg-black shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+      <div class="bg-white dark:bg-black px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
         <div class="sm:flex sm:items-start">
           <Show when={props.icon}>
-            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-              <HeroIcon name={props.icon} class="h-6 w-6 text-blue-600"/>
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
+              <HeroIcon name={props.icon} class="h-6 w-6 text-blue-600 dark:text-black"/>
             </div>
           </Show>
-          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">{props.title}</h3>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">{props.title}</h3>
             <div class="mt-2">{props.children}</div>
           </div>
         </div>
       </div>
       <Show when={props.footer}>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">{props.footer}</div>
+        <div class="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 grid grid-cols-1 sm:flex sm:flex-row-reverse">{props.footer}</div>
       </Show>
     </dialog>
   )
