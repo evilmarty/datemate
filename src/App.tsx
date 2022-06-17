@@ -1,7 +1,7 @@
 import type { Component, Accessor, Setter } from 'solid-js'
 import { createSignal, createMemo, createEffect, onCleanup, Show } from 'solid-js'
 import { parseDate, isValidDate } from './date'
-import { Input, DataList, Time, Button, Dialog } from './components'
+import { Input, DataList, Time, Button, Dialog, CalendarPicker } from './components'
 import logo from './assets/logo.svg'
 
 function maybeIsValidDate(date) {
@@ -25,7 +25,8 @@ function useHash(): [Accessor, Setter] {
 function App(): Component {
   const [hash, setHash] = useHash()
   const [dateInput, setDateInput] = createSignal(hash())
-  const [refDate, setRefDate] = createSignal(null)
+  const [refDateInput, setRefDateInput] = createSignal('')
+  const refDate = createMemo(() => parseDate(refDateInput()))
   const date = createMemo(() => parseDate(dateInput(), refDate()))
   const showDetails = createMemo(() => isValidDate(date()))
   const [showInfo, setShowInfo] = createSignal(false)
@@ -45,8 +46,14 @@ function App(): Component {
         </svg>
         <Button icon="information-circle" class="absolute top-2 right-2 text-black" onClick={() => setShowInfo(true)}/>
       </header>
-      <Input value={dateInput()} isValid={maybeIsValidDate(date())} onInput={e => setDateInput(e.target.value)}/>
-      <Input isValid={maybeIsValidDate(refDate())} onInput={e => setRefDate(parseDate(e.target.value))} placeholder="Now"/>
+      <div class="flex justify-between mt-1 space-x-1">
+        <Input value={dateInput()} isValid={maybeIsValidDate(date())} onInput={e => setDateInput(e.target.value)}/>
+        <CalendarPicker date={date()} onSelect={date => setDateInput(date.toLocaleString())}/>
+      </div>
+      <div class="flex justify-between mt-1 space-x-1">
+        <Input value={refDateInput()} isValid={maybeIsValidDate(refDate())} onInput={e => setRefDateInput(e.target.value)} placeholder="Relative to now"/>
+        <CalendarPicker date={refDate()} onSelect={date => setRefDateInput(date.toLocaleString())}/>
+      </div>
       <Show when={showDetails()}>
         <div class="mt-3">
           <DataList>
