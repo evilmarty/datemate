@@ -67,10 +67,12 @@ export function DataList(props: DataListProps): Component {
 
 interface InputProps {
   isValid?: boolean
+  value: string
+  onInput: Function
+  placeholder?: string
 }
 
 export function Input(props: InputProps): Component {
-  const [local, others] = splitProps(props, ['isValid'])
   const validate = (el, isValid) => {
     createEffect(() => {
       el.setCustomValidity(isValid() !== false ? '' : 'Invalid')
@@ -79,13 +81,13 @@ export function Input(props: InputProps): Component {
 
   return (
     <div class="relative rounded-md shadow-sm flex-1">
-      <input type="text" class="text-center focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm bg-white dark:bg-black text-black dark:text-white border-gray-300 dark:border-gray-700 rounded-md invalid:border-red-300 dark:placeholder:text-gray-800" use:validate={local.isValid} {...others}/>
+      <input type="text" class="text-center focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm bg-white dark:bg-black text-black dark:text-white border-gray-300 dark:border-gray-700 rounded-md invalid:border-red-300 dark:placeholder:text-gray-800" use:validate={props.isValid} value={props.value} onInput={props.onInput} placeholder={props.placeholder}/>
       <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
         <Switch>
-          <Match when={local.isValid === false}>
+          <Match when={props.isValid === false}>
             <HeroIcon name="exclamation-circle" class="text-red-300"/>
           </Match>
-          <Match when={local.isValid === true}>
+          <Match when={props.isValid === true}>
             <HeroIcon name="check" class="text-green-300"/>
           </Match>
         </Switch>
