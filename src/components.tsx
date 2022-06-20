@@ -1,5 +1,6 @@
 import type { Component, Accessor, Setter } from 'solid-js'
 import { createSignal, createEffect, createMemo, splitProps, Switch, Match, For, children } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 import { isValidDate, getDatesInMonth } from './date'
 
 interface TimeProps {
@@ -46,19 +47,22 @@ export function Time(props: TimeProps): Component {
 }
 
 interface DataListProps {
-  props: Component[]
+  children: Component[]
+  onItemClick?: Function
 }
 
 export function DataList(props: DataListProps): Component {
   const resolved = children(() => Array.isArray(props.children) ? props.children : [props.children])
+  const baseStyle = 'w-full text-left bg-white dark:bg-black odd:bg-gray-50 dark:odd:bg-gray-900 px-4 py-5 sm:px-6 sm:grid sm:grid-cols-3 sm:gap-4 flex-1 group active:bg-blue-500'
+  const component = props.onItemClick ? 'button' : 'div'
   return (
     <dl class="bg-white dark:bg-black dark:border dark:border-gray-800 shadow overflow-hidden sm:rounded-lg">
       <For each={resolved()}>
         {child => (
-          <div class="bg-white dark:bg-black odd:bg-gray-50 dark:odd:bg-gray-900 px-4 py-5 sm:px-6 sm:grid sm:grid-cols-3 sm:gap-4 flex-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-600">{child.title}</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-400 sm:mt-0 sm:col-span-2">{child}</dd>
-          </div>
+          <Dynamic component={component} onClick={props.onItemClick} classList={{[baseStyle]: true, 'cursor-pointer': props.onItemClick}}>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-600 group-active:text-white dark:group-active:text-black">{child.title}</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-400 sm:mt-0 sm:col-span-2 group-active:text-white dark:group-active:text-black">{child}</dd>
+          </Dynamic>
         )}
       </For>
     </dl>

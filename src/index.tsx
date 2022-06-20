@@ -19,9 +19,15 @@ function updateParams(state) {
   history.replaceState(historyState, null, `?${params}`)
 }
 
+function handleClick(event) {
+  const el = event.currentTarget.querySelector('dd')
+  navigator.clipboard.writeText(el?.textContent)
+}
+
 const params = new URLSearchParams(location.search)
+const clipboardSupport = 'clipboard' in navigator
 
 render(
-  () => <App date={params.get('d')} refDate={params.get('r')} onChange={updateParams} />,
+  () => <App date={params.get('d')} refDate={params.get('r')} onChange={updateParams} onClick={clipboardSupport && handleClick}/>,
   document.getElementById('root') as HTMLElement,
 )

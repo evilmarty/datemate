@@ -7,6 +7,7 @@ interface AppProps {
   date: string
   refDate: string
   onChange?: Function
+  onClick?: Function
 }
 
 function App(props: AppProps): Component {
@@ -39,7 +40,7 @@ function App(props: AppProps): Component {
       </div>
       <Show when={state.showDetails}>
         <div class="mt-3">
-          <DataList>
+          <DataList onItemClick={props.onClick}>
             <Time title="Date" datetime={state.date} format={{}}/>
             <Time title="Time" datetime={state.date} format={{hour: 'numeric', minute: 'numeric'}}/>
             <Time title="Week day" datetime={state.date} format={{weekday: 'long'}}/>
