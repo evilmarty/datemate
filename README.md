@@ -1,6 +1,6 @@
-# datemate
+# ![datemate](src/logo.svg)
 
-A simple date helper web app.
+A simple date helper web app that's available at https://marty.zalega.me/datemate.
 
 ## Build instructions
 
