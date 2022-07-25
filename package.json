@@ -21,6 +21,6 @@
   "dependencies": {
     "chrono-node": "^2.3.9",
     "date-fns": "^2.29.1",
-    "solid-js": "^1.4.7"
+    "solid-js": "^1.4.8"
   }
 }
