@@ -11,41 +11,6 @@ interface TimeProps {
   children: any
 }
 
-export function Time(props: TimeProps): Component {
-  const [local, other] = splitProps(props, ['locale', 'datetime', 'format', 'parts', 'children'])
-  const isFunction = typeof(local.children) === 'function'
-  const resolved = children(() => local.children)
-  const content = createMemo(() => {
-    const children = !isFunction ? resolved() : null
-    let dtf
-
-    if (children) {
-      return children
-    }
-    if (!isValidDate(local.datetime)) {
-      return null
-    }
-    else if (isFunction) {
-      return local.children(local.datetime)
-    }
-    if (typeof(local.parts) === 'object') {
-      const keys = Object.keys(local.parts)
-      dtf = new Intl.DateTimeFormat(local.locale, local.parts)
-      return dtf
-        .formatToParts(local.datetime)
-        .filter(part => keys.includes(part.type))
-        .map(part => part.value)
-    } else {
-      dtf = new Intl.DateTimeFormat(local.locale, local.format)
-      return dtf.format(local.datetime)
-    }
-  })
-  const datetime = createMemo(() => isValidDate(local.datetime) ? local.datetime.toISOString() : null)
-  return (
-    <time {...other} datetime={datetime()}>{content()}</time>
-  )
-}
-
 interface DataListProps {
   children: Component[]
   onItemClick?: Function

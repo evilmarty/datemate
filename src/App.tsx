@@ -1,8 +1,27 @@
 import type { Component, Accessor, Setter } from 'solid-js'
-import { createEffect, Show } from 'solid-js'
-import { Input, DataList, Time, Button, Dialog, CalendarPicker } from './components'
-import { createState, showInfo, hideInfo, changeDateInput, changeDate, changeRefDateInput, changeRefDate } from './state'
+import { createEffect, createMemo, Show } from 'solid-js'
+import { Input, DataList, Button, Dialog, CalendarPicker } from './components'
+import { createState, showInfo, hideInfo, changeDateInput, changeDate, changeRefDateInput, changeRefDate, StateProps } from './state'
 import logo from './logo.svg'
+
+const LABELS = {
+  date: 'Date',
+  time: 'Time',
+  weekday: 'Week day',
+  month: 'Month',
+  year: 'Year',
+  era: 'Era',
+  timezone: 'Time zone',
+  timestamp: 'Unix timestamp',
+  seconds: 'Seconds',
+  minutes: 'Minutes',
+  hours: 'Hours',
+  days: 'Days',
+  weeks: 'Weeks',
+  months: 'Months',
+  quarters: 'Quarters',
+  years: 'Years',
+}
 
 interface AppProps {
   date: string
@@ -12,7 +31,9 @@ interface AppProps {
 }
 
 function App(props: AppProps): Component {
-  const [state, setState] = createState(props)
+  const [state: StateProps, setState] = createState(props)
+  const dateDetails = createMemo(() => getDateDetailEntries(state))
+  const relDetails = createMemo(() => getRelativeDetailEntries(state))
 
   if (props.onChange) {
     createEffect(() => {
@@ -40,14 +61,12 @@ function App(props: AppProps): Component {
       <Show when={state.showDetails}>
         <div class="mt-3">
           <DataList onItemClick={props.onClick}>
-            <Time title="Date" datetime={state.date} format={{}}/>
-            <Time title="Time" datetime={state.date} format={{hour: 'numeric', minute: 'numeric'}}/>
-            <Time title="Week day" datetime={state.date} format={{weekday: 'long'}}/>
-            <Time title="Month" datetime={state.date} format={{month: 'long'}}/>
-            <Time title="Year" datetime={state.date} format={{year: 'numeric'}}/>
-            <Time title="Era" datetime={state.date} parts={{era: 'long'}}/>
-            <Time title="Time zone" datetime={state.date} parts={{timeZoneName: 'long'}}/>
-            <Time title="Unix timestamp" datetime={state.date}>{date => String(date.getTime())}</Time>
+            <For each={dateDetails()}>
+              {([key, value]) => <time title={LABELS[key]} datetime={state.date}>{value}</time>}
+            </For>
+            <For each={relDetails()}>
+              {([key, value]) => <time title={LABELS[key]} datetime={state.date}>{value}</time>}
+            </For>
           </DataList>
         </div>
       </Show>
@@ -60,6 +79,23 @@ function App(props: AppProps): Component {
       </Dialog>
     </div>
   )
+}
+
+function getDateDetailEntries(state: StateProps) {
+  if (state.showDetails) {
+    return Object.entries(state.dateDetails)
+  } else {
+    return []
+  }
+}
+
+function getRelativeDetailEntries(state: StateProps) {
+  if (state.showDetails) {
+    const entries = Object.entries(state.relDetails)
+    return entries.filter(([key, value]) => value)
+  } else {
+    return []
+  }
 }
 
 export default App

@@ -1,6 +1,6 @@
 import { createStore } from 'solid-js/store'
 import { batch } from 'solid-js'
-import { parseDate, isValidDate } from './date'
+import { parseDate, isValidDate, getDateDetails, getHumanisedRelativeDetails } from './date'
 
 interface StateProps {
   refDate?: string
@@ -16,6 +16,8 @@ interface State {
   dateValid: boolean
   showInfo: boolean
   showDetails: boolean
+  dateDetails?: DateDetails
+  relDetails?: HumanisedRelativeDetails
 }
 
 export function createState(initialState: StateProps = {}): [State, Function<State>] {
@@ -48,55 +50,42 @@ export function hideInfo(setState: Function<State>) {
   setState('showInfo', false)
 }
 
-export function changeDateAndRefDateInputs(setState: Function<State>, dateInput: string, refDateInput: string) {
-  batch(() => {
-    changeRefDateInput(setState, refDateInput)
-    changeDateInput(setState, dateInput)
-  })
-}
-
 export function changeDateInput(setState: Function<State>, dateInput: string) {
-  setState(state => {
-    const date = parseDate(dateInput, state.refDate)
-    const dateValid = dateInput && isValidDate(date)
-    return { ...state, date, dateInput, dateValid }
-  })
+  setState(state => updateDateInput(state, dateInput))
 }
 
 export function changeDate(setState: Function<State>, date: Date) {
-  setState(state => ({
-    ...state,
-    date,
-    dateInput: date.toLocaleString(),
-    dateValid: isValidDate(date),
-  }))
+  const dateInput = date.toLocaleString()
+  setState(state => updateDate({...state, dateInput}, date))
 }
 
 export function changeRefDateInput(setState: Function<State>, refDateInput: string) {
-  setState(state => {
-    const refDate = parseDate(refDateInput)
-    const date = parseDate(state.dateInput, refDate)
-    return {
-      ...state,
-      refDate,
-      refDateInput,
-      date,
-      refDateValid: refDateInput && isValidDate(refDate),
-      dateValid: state.dateInput && isValidDate(date),
-    }
-  })
+  setState(state => updateRefDateInput(state, refDateInput))
 }
 
 export function changeRefDate(setState: Function<State>, refDate: Date) {
-  setState(state => {
-    const date = parseDate(state.dateInput, refDate)
-    return {
-      ...state,
-      refDate,
-      date,
-      refDateInput: refDate.toLocaleString(),
-      refDateValid: isValidDate(refDate),
-      dateValid: state.dateInput && isValidDate(date),
-    }
-  })
+  const refDateInput = refDate.toLocaleString()
+  setState(state => updateRefDate({...state, refDateInput}, refDate))
+}
+
+function updateDateInput(state, dateInput) {
+  const date = parseDate(dateInput, state.refDate)
+  return updateDate({...state, dateInput}, date)
+}
+
+function updateDate(state, date) {
+  const dateValid = state.dateInput && isValidDate(date)
+  const dateDetails = dateValid ? getDateDetails(date) : null
+  const relDetails = dateValid ? getHumanisedRelativeDetails(date, state.refDate || new Date()) : null
+  return {...state, date, dateValid, dateDetails, relDetails}
+}
+
+function updateRefDateInput(state, refDateInput) {
+  const refDate = parseDate(refDateInput)
+  return updateRefDate({...state, refDateInput}, refDate)
+}
+
+function updateRefDate(state, refDate) {
+  const refDateValid = state.refDateInput && isValidDate(refDate)
+  return updateDateInput({...state, refDate, refDateValid}, state.dateInput)
 }
