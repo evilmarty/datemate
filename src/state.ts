@@ -15,7 +15,6 @@ interface State {
   dateInput: string
   dateValid: boolean
   showInfo: boolean
-  showDetails: boolean
   dateDetails?: DateDetails
   relDetails?: HumanisedRelativeDetails
 }
@@ -29,9 +28,6 @@ export function createState(initialState: StateProps = {}): [State, Function<Sta
     dateInput: '',
     dateValid: null,
     showInfo: false,
-    get showDetails() {
-      return this.dateValid
-    },
   })
   if (initialState.refDate) {
     changeRefDateInput(setState, initialState.refDate)

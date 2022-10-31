@@ -31,7 +31,7 @@ interface AppProps {
 }
 
 function App(props: AppProps): Component {
-  const [state: StateProps, setState] = createState(props)
+  const [state, setState] = createState(props)
   const dateDetails = createMemo(() => getDateDetailEntries(state))
   const relDetails = createMemo(() => getRelativeDetailEntries(state))
 
@@ -47,7 +47,7 @@ function App(props: AppProps): Component {
   return (
     <div class="flex items-center justify-center min-h-screen p-4 ml-auto mr-auto w-full max-w-xl flex-col items-stretch">
       <header class="block mb-10">
-        <img src={logo} classList={{'ml-auto mr-auto h-40 scale-100 transition-transform ease-in-out origin-bottom': true, 'scale-75': state.showDetails}}/>
+        <img src={logo} classList={{'ml-auto mr-auto h-40 scale-100 transition-transform ease-in-out origin-bottom': true, 'scale-75': state.dateValid}}/>
         <Button icon="information-circle" class="absolute top-2 right-2 text-black" onClick={() => showInfo(setState)}/>
       </header>
       <div class="flex justify-between mt-1 space-x-1">
@@ -58,7 +58,7 @@ function App(props: AppProps): Component {
         <Input value={state.refDateInput} isValid={state.refDateValid} onInput={e => changeRefDateInput(setState, e.target.value)} placeholder="Relative to now"/>
         <CalendarPicker date={state.refDate} onSelect={date => changeRefDate(setState, date)}/>
       </div>
-      <Show when={state.showDetails}>
+      <Show when={state.dateValid}>
         <div class="mt-3">
           <DataList onItemClick={props.onClick}>
             <For each={dateDetails()}>
@@ -82,7 +82,7 @@ function App(props: AppProps): Component {
 }
 
 function getDateDetailEntries(state: StateProps) {
-  if (state.showDetails) {
+  if (state.dateValid) {
     return Object.entries(state.dateDetails)
   } else {
     return []
@@ -90,7 +90,7 @@ function getDateDetailEntries(state: StateProps) {
 }
 
 function getRelativeDetailEntries(state: StateProps) {
-  if (state.showDetails) {
+  if (state.dateValid) {
     const entries = Object.entries(state.relDetails)
     return entries.filter(([key, value]) => value)
   } else {
