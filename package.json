@@ -19,7 +19,7 @@
     "vite-plugin-solid": "^2.6.1"
   },
   "dependencies": {
-    "chrono-node": "^2.6.2",
+    "chrono-node": "^2.6.3",
     "date-fns": "^2.29.3",
     "solid-js": "^1.7.3"
   }
