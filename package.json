@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "chrono-node": "^2.6.3",
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "solid-js": "^1.7.3"
   }
 }
