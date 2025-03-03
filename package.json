@@ -16,7 +16,7 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vite": "^6.2.0",
-    "vite-plugin-solid": "^2.11.2"
+    "vite-plugin-solid": "^2.11.6"
   },
   "dependencies": {
     "chrono-node": "^2.7.8",
