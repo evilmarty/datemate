@@ -1,101 +1,313 @@
-import type { Component, Accessor, Setter } from 'solid-js'
-import { createEffect, createMemo, Show } from 'solid-js'
-import { Input, DataList, Button, Dialog, CalendarPicker } from './components'
-import { createState, showInfo, hideInfo, changeDateInput, changeDate, changeRefDateInput, changeRefDate, StateProps } from './state'
-import logo from './logo.svg'
+import { useState } from "react";
+import Field from "./Field";
+import CopyContext from "./CopyContext";
+import EmojiCycler from "./EmojiCycler";
+import {
+  getDateInTimezone,
+  getCurrentTimezone,
+  setDay,
+  getWeekdayNames,
+  getMonthNames,
+  getTimezones,
+  getMeridians,
+  getRelativeTime,
+  parseRelativeTime,
+  formatDateForInput,
+  formatTimeForInput,
+} from "./utils";
+import logo from "./logo.svg";
+import "./App.css"; // Import your CSS file for styling
 
-const LABELS = {
-  date: 'Date',
-  time: 'Time',
-  weekday: 'Week day',
-  month: 'Month',
-  year: 'Year',
-  era: 'Era',
-  timezone: 'Time zone',
-  timestamp: 'Unix timestamp',
-  seconds: 'Seconds',
-  minutes: 'Minutes',
-  hours: 'Hours',
-  days: 'Days',
-  weeks: 'Weeks',
-  months: 'Months',
-  quarters: 'Quarters',
-  years: 'Years',
-}
+const MERIDIANS = getMeridians();
+const [AM, PM] = MERIDIANS;
+const TIMEZONES = getTimezones();
+const MONTHS = getMonthNames();
+const DAYS_OF_WEEK = getWeekdayNames();
 
-interface AppProps {
-  date: string
-  refDate: string
-  onChange?: Function
-  onClick?: Function
-}
+const getMeridian = (date: Date) => {
+  return date.getHours() >= 12 ? PM : AM;
+};
 
-function App(props: AppProps): Component {
-  const [state, setState] = createState(props)
-  const dateDetails = createMemo(() => getDateDetailEntries(state))
-  const relDetails = createMemo(() => getRelativeDetailEntries(state))
+const App = () => {
+  const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
+  const [selectedTimezone, setSelectedTimezone] =
+    useState<string>(getCurrentTimezone);
+  const [relativeTime, setRelativeTime] = useState<string>(
+    getRelativeTime(currentDate),
+  );
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  if (props.onChange) {
-    createEffect(() => {
-      // referencing state property changes to trigger effect
-      if (state.date || state.refDate) {
-        props.onChange(state)
+  // Update current date and relative time
+  const updateCurrentDate = (date: Date) => {
+    setCurrentDate(date);
+    setRelativeTime(getRelativeTime(date));
+  };
+
+  // Update date field
+  const handleDateChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    const [year, month, day] = value.split("-");
+    newDate.setFullYear(parseInt(year));
+    newDate.setMonth(parseInt(month) - 1);
+    newDate.setDate(parseInt(day));
+    updateCurrentDate(newDate);
+  };
+
+  // Update time field
+  const handleTimeChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    const [hours, minutes] = value.split(":");
+    newDate.setHours(parseInt(hours));
+    newDate.setMinutes(parseInt(minutes));
+    updateCurrentDate(newDate);
+  };
+
+  // Update timestamp field
+  const handleTimestampChange = (value: string) => {
+    const timestamp = parseInt(value);
+    if (!isNaN(timestamp)) {
+      updateCurrentDate(new Date(timestamp));
+    }
+  };
+
+  // Update year field
+  const handleYearChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setFullYear(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Update month field
+  const handleMonthChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Update day field
+  const handleDayChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Update day of week field
+  const handleDayOfWeekChange = (value: string) => {
+    const targetDayOfWeek = parseInt(value);
+    updateCurrentDate(setDay(currentDate, targetDayOfWeek));
+  };
+
+  // Update hour field
+  const handleHourChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setHours(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Update meridian field (AM/PM)
+  const handleMeridianChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    const currentHour = newDate.getHours();
+
+    if (value === AM) {
+      // Convert to AM
+      if (currentHour >= 12) {
+        newDate.setHours(currentHour - 12);
       }
-    })
-  }
+    } else {
+      // Convert to PM
+      if (currentHour < 12) {
+        newDate.setHours(currentHour + 12);
+      }
+    }
+    updateCurrentDate(newDate);
+  };
+
+  // Update minute field
+  const handleMinuteChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setMinutes(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Update second field
+  const handleSecondChange = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setSeconds(parseInt(value));
+    updateCurrentDate(newDate);
+  };
+
+  // Parse relative time input and update date
+  const handleRelativeTimeChange = (value: string) => {
+    const newDate = parseRelativeTime(value);
+    if (newDate) {
+      setCurrentDate(newDate);
+    }
+    setRelativeTime(value);
+  };
+
+  // Either update date on blur or reset to current relative time
+  const handleRelativeTimeBlur = (value: string) => {
+    const newDate = parseRelativeTime(value);
+    if (newDate) {
+      updateCurrentDate(newDate);
+    } else {
+      setRelativeTime(getRelativeTime(currentDate));
+    }
+  };
+
+  // Display current date in selected timezone
+  const displayDate =
+    selectedTimezone === getCurrentTimezone()
+      ? currentDate
+      : getDateInTimezone(currentDate, selectedTimezone);
 
   return (
-    <div class="flex items-center justify-center min-h-screen p-4 ml-auto mr-auto w-full max-w-xl flex-col items-stretch">
-      <header class="block mb-10">
-        <img src={logo} classList={{'ml-auto mr-auto h-40 scale-100 transition-transform ease-in-out origin-bottom': true, 'scale-75': state.dateValid}}/>
-        <Button icon="information-circle" class="absolute top-2 right-2 text-black" onClick={() => showInfo(setState)}/>
-      </header>
-      <div class="flex justify-between mt-1 space-x-1">
-        <Input value={state.dateInput} isValid={state.dateValid} onInput={e => changeDateInput(setState, e.target.value)}/>
-        <CalendarPicker date={state.date} onSelect={date => changeDate(setState, date)}/>
-      </div>
-      <div class="flex justify-between mt-1 space-x-1">
-        <Input value={state.refDateInput} isValid={state.refDateValid} onInput={e => changeRefDateInput(setState, e.target.value)} placeholder="Relative to now"/>
-        <CalendarPicker date={state.refDate} onSelect={date => changeRefDate(setState, date)}/>
-      </div>
-      <Show when={state.dateValid}>
-        <div class="mt-3">
-          <DataList onItemClick={props.onClick}>
-            <For each={dateDetails()}>
-              {([key, value]) => <time title={LABELS[key]} datetime={state.date}>{value}</time>}
-            </For>
-            <For each={relDetails()}>
-              {([key, value]) => <time title={LABELS[key]} datetime={state.date}>{value}</time>}
-            </For>
-          </DataList>
+    <div className="max-w-2xl mx-auto p-6 min-h-screen">
+      <img src={logo} alt="Date Mate" className="w-50 mx-auto mb-6" />
+      <CopyContext.Provider value={[copiedField, setCopiedField]}>
+        <div className="space-y-2 max-w-96 mx-auto">
+          <Field
+            label="Relative"
+            value={relativeTime}
+            type="search"
+            onChange={(e) => handleRelativeTimeChange(e.target.value)}
+            onBlur={(e) => handleRelativeTimeBlur(e.target.value)}
+            placeholder="e.g., 5 minutes ago, 2 hours from now"
+            fieldName="relative"
+          />
+
+          <Field
+            label="Date"
+            type="date"
+            value={formatDateForInput(displayDate)}
+            onChange={(e) => handleDateChange(e.target.value)}
+            fieldName="date"
+          />
+
+          <Field
+            label="Time"
+            type="time"
+            value={formatTimeForInput(displayDate)}
+            onChange={(e) => handleTimeChange(e.target.value)}
+            fieldName="time"
+          />
+
+          <Field
+            label="Timezone"
+            value={selectedTimezone}
+            onChange={(e) => setSelectedTimezone(e.target.value)}
+            options={TIMEZONES}
+            valueKeys={true}
+            copyValue={selectedTimezone}
+            fieldName="timezone"
+          />
+
+          <Field
+            label="Timestamp"
+            type="number"
+            value={currentDate.getTime()}
+            onChange={(e) => handleTimestampChange(e.target.value)}
+            copyValue={currentDate.getTime().toString()}
+            fieldName="timestamp"
+          />
+
+          <Field
+            label="Year"
+            type="number"
+            value={displayDate.getFullYear()}
+            onChange={(e) => handleYearChange(e.target.value)}
+            copyValue={displayDate.getFullYear().toString()}
+            fieldName="year"
+          />
+
+          <Field
+            label="Month"
+            value={displayDate.getMonth()}
+            onChange={(e) => handleMonthChange(e.target.value)}
+            options={MONTHS}
+            copyValue={MONTHS[displayDate.getMonth()]}
+            fieldName="month"
+          />
+
+          <Field
+            label="Day"
+            type="number"
+            min="1"
+            max="31"
+            value={displayDate.getDate()}
+            onChange={(e) => handleDayChange(e.target.value)}
+            copyValue={displayDate.getDate().toString()}
+            fieldName="day"
+          />
+
+          <Field
+            label="Day of Week"
+            value={displayDate.getDay()}
+            onChange={(e) => handleDayOfWeekChange(e.target.value)}
+            options={DAYS_OF_WEEK}
+            copyValue={DAYS_OF_WEEK[displayDate.getDay()]}
+            fieldName="dayOfWeek"
+          />
+
+          <Field
+            label="Hour"
+            type="number"
+            min="0"
+            max="23"
+            value={displayDate.getHours()}
+            onChange={(e) => handleHourChange(e.target.value)}
+            copyValue={displayDate.getHours().toString()}
+            fieldName="hour"
+          />
+
+          <Field
+            label="Meridian"
+            value={getMeridian(displayDate)}
+            onChange={(e) => handleMeridianChange(e.target.value)}
+            options={MERIDIANS}
+            valueKeys={true}
+            fieldName="meridian"
+          />
+
+          <Field
+            label="Minute"
+            type="number"
+            min="0"
+            max="59"
+            value={displayDate.getMinutes()}
+            onChange={(e) => handleMinuteChange(e.target.value)}
+            copyValue={displayDate.getMinutes().toString()}
+            fieldName="minute"
+          />
+
+          <Field
+            label="Second"
+            type="number"
+            min="0"
+            max="59"
+            value={displayDate.getSeconds()}
+            onChange={(e) => handleSecondChange(e.target.value)}
+            copyValue={displayDate.getSeconds().toString()}
+            fieldName="second"
+          />
         </div>
-      </Show>
-      <Dialog modal={state.showInfo} footer={<Button onClick={() => hideInfo(setState)}>Close</Button>} title="About" icon="information-circle">
-        <div class="text-sm text-gray-500 space-y-2">
-          <p>Date Mate is a helpful app to better understand dates and time. Visit the <a href="https://github.com/evilmarty/datemate" class="text-blue-600">GitHub</a> repository to contribute or report an issue.</p>
-          <p>This was made by <a href="https://marty.zalega.me" class="text-blue-600">Marty Zalega</a>.</p>
-          <p>I hope this app was useful to you.</p>
-        </div>
-      </Dialog>
+      </CopyContext.Provider>
+      <div className="mt-8 text-sm text-center font-medium text-gray-500 dark:text-gray-400">
+        <p>
+          Made with
+          <EmojiCycler
+            emojis={["❤️", "🍺", "🌯", "🥃", "🍦"]}
+            className="inline-block mx-1"
+          />
+          by
+          <a href="https://marty.zalega.me" className="ml-1">
+            evilmarty
+          </a>
+        </p>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-function getDateDetailEntries(state: StateProps) {
-  if (state.dateValid) {
-    return Object.entries(state.dateDetails)
-  } else {
-    return []
-  }
-}
-
-function getRelativeDetailEntries(state: StateProps) {
-  if (state.dateValid) {
-    const entries = Object.entries(state.relDetails)
-    return entries.filter(([key, value]) => value)
-  } else {
-    return []
-  }
-}
-
-export default App
+export default App;
