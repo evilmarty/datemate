@@ -11,9 +11,24 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
         with:
-          persist-credentials: false 
+          persist-credentials: false
+      - name: Setup 🔧
+        uses: actions/setup-node@v4
+      - name: Clean Install 🧹
+        run: npm ci
+      - name: Build 🚧
+        run: npm run build
 
-      - name: Install and Build 🔧
-        run: |
-          npm install
-          npm run build
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Setup 🔧
+        uses: actions/setup-node@v4
+      - name: Clean Install 🧹
+        run: npm ci
+      - name: Test 🚦
+        run: npm test
