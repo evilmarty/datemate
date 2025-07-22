@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Field from "./Field";
 import CopyContext from "./CopyContext";
 import EmojiCycler from "./EmojiCycler";
@@ -28,19 +28,62 @@ const getMeridian = (date: Date) => {
   return date.getHours() >= 12 ? PM : AM;
 };
 
+const getDateFromUrlParam = (): Date | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const dateParam = urlParams.get("d");
+  if (dateParam) {
+    const date = new Date(dateParam);
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  return null;
+};
+
+const setDateInUrlParam = (date: Date) => {
+  const url = new URL(window.location.href);
+  const dateString = date.toISOString();
+  url.searchParams.set("d", dateString);
+  window.history.pushState({ date: dateString }, "", url.toString());
+};
+
 const App = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(() => new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(
+    () => getDateFromUrlParam() || new Date(),
+  );
   const [selectedTimezone, setSelectedTimezone] =
     useState<string>(getCurrentTimezone);
   const [relativeTime, setRelativeTime] = useState<string>(
     getRelativeTime(currentDate),
   );
-  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const copiedField = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    window.addEventListener(
+      "popstate",
+      (e) => {
+        const dateString = e.state?.date;
+        const date = dateString ? new Date(dateString) : new Date();
+        if (!isNaN(date.getTime())) {
+          updateCurrentDate(date, false);
+        }
+      },
+      { signal: controller.signal },
+    );
+
+    return () => {
+      controller.abort();
+    };
+  });
 
   // Update current date and relative time
-  const updateCurrentDate = (date: Date) => {
+  const updateCurrentDate = (date: Date, updateUrl: boolean = true) => {
     setCurrentDate(date);
     setRelativeTime(getRelativeTime(date));
+    if (updateUrl) {
+      setDateInUrlParam(date);
+    }
   };
 
   // Update date field
@@ -161,12 +204,31 @@ const App = () => {
     selectedTimezone === getCurrentTimezone()
       ? currentDate
       : getDateInTimezone(currentDate, selectedTimezone);
+  const localeDate = currentDate.toLocaleString(undefined, {
+    timeZone: selectedTimezone,
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+  });
 
   return (
-    <div className="max-w-2xl mx-auto p-6 min-h-screen">
+    <div className="max-w-2xl container mx-auto p-6 min-h-screen">
       <img src={logo} alt="Date Mate" className="w-50 mx-auto mb-6" />
-      <CopyContext.Provider value={[copiedField, setCopiedField]}>
-        <div className="space-y-2 max-w-96 mx-auto">
+      <CopyContext.Provider value={copiedField}>
+        <div className="space-y-2">
+          <Field
+            value={localeDate}
+            fieldName="datetime"
+            align="center"
+            className="mb-10"
+            readOnly
+          />
+
           <Field
             label="Relative"
             value={relativeTime}
@@ -294,17 +356,15 @@ const App = () => {
         </div>
       </CopyContext.Provider>
       <div className="mt-8 text-sm text-center font-medium text-gray-500 dark:text-gray-400">
-        <p>
-          Made with
-          <EmojiCycler
-            emojis={["❤️", "🍺", "🌯", "🥃", "🍦"]}
-            className="inline-block mx-1"
-          />
-          by
-          <a href="https://marty.zalega.me" className="ml-1">
-            evilmarty
-          </a>
-        </p>
+        Made with
+        <EmojiCycler
+          emojis={["❤️", "🍺", "🌯", "🥃", "🍦"]}
+          className="inline-block mx-1"
+        />
+        by
+        <a href="https://marty.zalega.me" className="ml-1">
+          evilmarty
+        </a>
       </div>
     </div>
   );
