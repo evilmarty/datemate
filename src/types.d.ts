@@ -10,7 +10,6 @@ export interface InputProps
   type?: string;
   value: any;
   options?: string[] | Record<string, string>;
-  valueKeys?: boolean;
   className?: string | undefined;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -20,7 +19,6 @@ export interface InputProps
 export interface FieldProps extends InputProps {
   label?: string;
   align?: "left" | "center" | "right";
-  copyValue?: any;
   fieldName?: string;
   className?: string;
 }

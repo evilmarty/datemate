@@ -123,7 +123,8 @@ const App = () => {
   // Update month field
   const handleMonthChange = (value: string) => {
     const newDate = new Date(currentDate);
-    newDate.setMonth(parseInt(value));
+    const index = MONTHS.indexOf(value);
+    newDate.setMonth(index);
     updateCurrentDate(newDate);
   };
 
@@ -136,7 +137,7 @@ const App = () => {
 
   // Update day of week field
   const handleDayOfWeekChange = (value: string) => {
-    const targetDayOfWeek = parseInt(value);
+    const targetDayOfWeek = DAYS_OF_WEEK.indexOf(value);
     updateCurrentDate(setDay(currentDate, targetDayOfWeek));
   };
 
@@ -260,8 +261,6 @@ const App = () => {
             value={selectedTimezone}
             onChange={(e) => setSelectedTimezone(e.target.value)}
             options={TIMEZONES}
-            valueKeys={true}
-            copyValue={selectedTimezone}
             fieldName="timezone"
           />
 
@@ -270,7 +269,6 @@ const App = () => {
             type="number"
             value={currentDate.getTime()}
             onChange={(e) => handleTimestampChange(e.target.value)}
-            copyValue={currentDate.getTime().toString()}
             fieldName="timestamp"
           />
 
@@ -279,16 +277,14 @@ const App = () => {
             type="number"
             value={displayDate.getFullYear()}
             onChange={(e) => handleYearChange(e.target.value)}
-            copyValue={displayDate.getFullYear().toString()}
             fieldName="year"
           />
 
           <Field
             label="Month"
-            value={displayDate.getMonth()}
+            value={MONTHS[displayDate.getMonth()]}
             onChange={(e) => handleMonthChange(e.target.value)}
             options={MONTHS}
-            copyValue={MONTHS[displayDate.getMonth()]}
             fieldName="month"
           />
 
@@ -299,16 +295,14 @@ const App = () => {
             max="31"
             value={displayDate.getDate()}
             onChange={(e) => handleDayChange(e.target.value)}
-            copyValue={displayDate.getDate().toString()}
             fieldName="day"
           />
 
           <Field
             label="Day of Week"
-            value={displayDate.getDay()}
+            value={DAYS_OF_WEEK[displayDate.getDay()]}
             onChange={(e) => handleDayOfWeekChange(e.target.value)}
             options={DAYS_OF_WEEK}
-            copyValue={DAYS_OF_WEEK[displayDate.getDay()]}
             fieldName="dayOfWeek"
           />
 
@@ -319,7 +313,6 @@ const App = () => {
             max="23"
             value={displayDate.getHours()}
             onChange={(e) => handleHourChange(e.target.value)}
-            copyValue={displayDate.getHours().toString()}
             fieldName="hour"
           />
 
@@ -328,7 +321,6 @@ const App = () => {
             value={getMeridian(displayDate)}
             onChange={(e) => handleMeridianChange(e.target.value)}
             options={MERIDIANS}
-            valueKeys={true}
             fieldName="meridian"
           />
 
@@ -339,7 +331,6 @@ const App = () => {
             max="59"
             value={displayDate.getMinutes()}
             onChange={(e) => handleMinuteChange(e.target.value)}
-            copyValue={displayDate.getMinutes().toString()}
             fieldName="minute"
           />
 
@@ -350,7 +341,6 @@ const App = () => {
             max="59"
             value={displayDate.getSeconds()}
             onChange={(e) => handleSecondChange(e.target.value)}
-            copyValue={displayDate.getSeconds().toString()}
             fieldName="second"
           />
         </div>
