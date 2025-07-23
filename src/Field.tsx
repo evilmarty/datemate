@@ -14,7 +14,6 @@ const Field: React.FC<FieldProps> = ({
   label = undefined,
   align = "right",
   fieldName = null,
-  copyValue = null,
   className = null,
   ...rest
 }) => (
@@ -35,7 +34,7 @@ const Field: React.FC<FieldProps> = ({
         {...rest}
       />
       <CopyButton
-        value={copyValue || value}
+        value={String(value)}
         fieldName={fieldName || label || ""}
         className="m-1 p-1"
       />
