@@ -23,6 +23,46 @@ const [AM, PM] = MERIDIANS;
 const TIMEZONES = getTimezones();
 const MONTHS = getMonthNames();
 const DAYS_OF_WEEK = getWeekdayNames();
+const NONE = "none";
+
+const NONE_OPTIONS = {
+  [NONE]: "None",
+};
+const DAY_OPTIONS = {
+  ...NONE_OPTIONS,
+  numeric: "Numeric",
+  "2-digit": "2-Digit",
+};
+const WEEKDAY_OPTIONS = {
+  ...NONE_OPTIONS,
+  long: "Long",
+  short: "Short",
+  narrow: "Narrow",
+};
+const MONTH_OPTIONS = {
+  ...WEEKDAY_OPTIONS,
+};
+const YEAR_OPTIONS = {
+  ...DAY_OPTIONS,
+};
+const HOUR_OPTIONS = {
+  ...DAY_OPTIONS,
+};
+const MINUTE_OPTIONS = {
+  ...DAY_OPTIONS,
+};
+const SECOND_OPTIONS = {
+  ...DAY_OPTIONS,
+};
+const TIMEZONE_NAME_OPTIONS = {
+  ...NONE_OPTIONS,
+  long: "Long",
+  short: "Short",
+  shortOffset: "Short Offset",
+  longOffset: "Long Offset",
+  shortGeneric: "Short Generic",
+  longGeneric: "Long Generic",
+};
 
 const getMeridian = (date: Date) => {
   return date.getHours() >= 12 ? PM : AM;
@@ -57,6 +97,17 @@ const App = () => {
     getRelativeTime(currentDate),
   );
   const copiedField = useState<string | null>(null);
+  const [displayOptions, setDisplayOptions] =
+    useState<Intl.DateTimeFormatOptions>({
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZoneName: "short",
+    });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -84,6 +135,16 @@ const App = () => {
     if (updateUrl) {
       setDateInUrlParam(date);
     }
+  };
+
+  const handleDisplayOptionChange = (
+    option: keyof Intl.DateTimeFormatOptions,
+    value: string,
+  ) => {
+    setDisplayOptions((prevOptions) => ({
+      ...prevOptions,
+      [option]: value === NONE ? undefined : value,
+    }));
   };
 
   // Update date field
@@ -206,29 +267,119 @@ const App = () => {
       ? currentDate
       : getDateInTimezone(currentDate, selectedTimezone);
   const localeDate = currentDate.toLocaleString(undefined, {
+    ...displayOptions,
     timeZone: selectedTimezone,
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
   });
 
   return (
     <div className="max-w-2xl container mx-auto p-6 min-h-screen">
-      <img src={logo} alt="Date Mate" className="w-50 mx-auto mb-6" />
+      <img src={logo} alt="Date Mate" className="w-50 mx-auto" />
       <CopyContext.Provider value={copiedField}>
         <div className="space-y-2">
-          <Field
-            value={localeDate}
-            fieldName="datetime"
-            align="center"
-            className="mb-10"
-            readOnly
-          />
+          <div className="mb-10">
+            <Field
+              value={localeDate}
+              fieldName="datetime"
+              align="center"
+              readOnly
+            />
+
+            <details className="mx-2 px-4 open:py-4 bg-gray-100 dark:bg-gray-900 border-t-0 border border-gray-300 dark:border-gray-900 rounded-md rounded-t-none transition-all transition-discrete overflow-hidden group">
+              <summary className="transition-all py-0 not-group-open:hover:py-1 list-none cursor-pointer text-xs text-center font-bold text-gray-500 dark:text-gray-400">
+                Display Options
+              </summary>
+              <div className="grid grid-cols-2 gap-2 pt-4 transition-all transition-discrete overflow-hidden h-0 group-open:h-auto">
+                <Field
+                  label="Day"
+                  fieldName="day-select"
+                  value={displayOptions.day || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("day", e.target.value)
+                  }
+                  options={DAY_OPTIONS}
+                  copyButton={false}
+                  className="order-1"
+                />
+                <Field
+                  label="Weekday"
+                  fieldName="weekday-select"
+                  value={displayOptions.weekday || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("weekday", e.target.value)
+                  }
+                  options={WEEKDAY_OPTIONS}
+                  copyButton={false}
+                  className="order-3"
+                />
+                <Field
+                  label="Month"
+                  fieldName="month-select"
+                  value={displayOptions.month || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("month", e.target.value)
+                  }
+                  options={MONTH_OPTIONS}
+                  copyButton={false}
+                  className="order-5"
+                />
+                <Field
+                  label="Year"
+                  fieldName="year-select"
+                  value={displayOptions.year || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("year", e.target.value)
+                  }
+                  options={YEAR_OPTIONS}
+                  copyButton={false}
+                  className="order-7"
+                />
+                <Field
+                  label="Hour"
+                  fieldName="hour-select"
+                  value={displayOptions.hour || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("hour", e.target.value)
+                  }
+                  options={HOUR_OPTIONS}
+                  copyButton={false}
+                  className="order-2"
+                />
+                <Field
+                  label="Minute"
+                  fieldName="minute-select"
+                  value={displayOptions.minute || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("minute", e.target.value)
+                  }
+                  options={MINUTE_OPTIONS}
+                  copyButton={false}
+                  className="order-4"
+                />
+                <Field
+                  label="Second"
+                  fieldName="second-select"
+                  value={displayOptions.second || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("second", e.target.value)
+                  }
+                  options={SECOND_OPTIONS}
+                  copyButton={false}
+                  className="order-6"
+                />
+                <Field
+                  label="Time Zone Name"
+                  fieldName="timeZoneName-select"
+                  value={displayOptions.timeZoneName || NONE}
+                  onChange={(e) =>
+                    handleDisplayOptionChange("timeZoneName", e.target.value)
+                  }
+                  options={TIMEZONE_NAME_OPTIONS}
+                  copyButton={false}
+                  className="order-8"
+                />
+              </div>
+            </details>
+          </div>
 
           <Field
             label="Relative"
