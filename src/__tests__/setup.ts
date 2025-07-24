@@ -21,3 +21,4 @@ Object.defineProperty(globalThis, "history", {
     pushState: () => {},
   },
 });
+
