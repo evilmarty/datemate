@@ -2,6 +2,7 @@ import React from "react";
 import type { InputProps } from "./types";
 
 const Input: React.FC<InputProps> = ({
+  id = undefined,
   type = "text",
   value,
   onChange = undefined,
@@ -12,6 +13,7 @@ const Input: React.FC<InputProps> = ({
   if (options !== null) {
     return (
       <select
+        id={id}
         value={value}
         onChange={onChange as React.ChangeEventHandler<HTMLSelectElement>}
         className={`${className} appearance-none px-3 py-2 bg-transparent text-inherit border-0 outline-0 flex-1`}
@@ -26,6 +28,7 @@ const Input: React.FC<InputProps> = ({
   } else {
     return (
       <input
+        id={id}
         type={type}
         value={value}
         onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}

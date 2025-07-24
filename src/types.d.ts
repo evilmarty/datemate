@@ -7,6 +7,7 @@ export interface CopyButtonProps {
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
+  id?: string;
   type?: string;
   value: any;
   options?: string[] | Record<string, string>;
