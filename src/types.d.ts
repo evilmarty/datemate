@@ -21,4 +21,5 @@ export interface FieldProps extends InputProps {
   align?: "left" | "center" | "right";
   fieldName?: string;
   className?: string;
+  copyButton?: boolean;
 }
