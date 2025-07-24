@@ -33,10 +33,10 @@ describe("App", () => {
   });
 
   it("should update the time value when the time input changes", async () => {
-    const expectedDate = "2024-06-04T19:16:59.386Z";
+    const expectedDate = "2024-06-05T05:16:59.386Z";
     render(<App />);
     const timeInput = screen.getByLabelText("Time", { selector: "#time" });
-    expect(timeInput.value).toBe("16:53");
+    expect(timeInput.value).toBe("06:53");
     fireEvent.change(timeInput, { target: { value: "05:16" } });
     expect(historySpy).toHaveBeenCalledWith(
       { date: expectedDate },
@@ -100,12 +100,12 @@ describe("App", () => {
   });
 
   it("should update the hours value when the hours input changes", async () => {
-    const expectedDate = "2024-06-04T20:53:59.386Z";
+    const expectedDate = "2024-06-05T07:53:59.386Z";
     render(<App />);
     const hoursInput = screen.getByLabelText("Hour", { selector: "#hour" });
-    expect(hoursInput.value).toBe("16");
-    fireEvent.change(hoursInput, { target: { value: "6" } });
     expect(hoursInput.value).toBe("6");
+    fireEvent.change(hoursInput, { target: { value: "7" } });
+    expect(hoursInput.value).toBe("7");
     expect(historySpy).toHaveBeenCalledWith(
       { date: expectedDate },
       "",
@@ -150,7 +150,56 @@ describe("App", () => {
     const copyButton = screen.getAllByTitle("Copy to clipboard")[0];
     fireEvent.click(copyButton);
     expect(spy).toHaveBeenCalledWith(
-      "Wednesday 5 June 2024 at 04:53:59 pm AEST",
+      // Some versions of Node.js format the date string differently.
+      expect.stringMatching(
+        /Wednesday,? (5 June|June 5),? 2024 at 06:53:59 am UTC/i,
+      ),
     );
+  });
+
+  it("should update the date when a valid relative time is entered", async () => {
+    vi.useFakeTimers();
+    const now = new Date("2024-06-05T06:53:59.386Z");
+    vi.setSystemTime(now);
+    render(<App />);
+    const relativeTimeInput = screen.getByLabelText("Relative");
+    fireEvent.change(relativeTimeInput, { target: { value: "2 days ago" } });
+    fireEvent.blur(relativeTimeInput);
+    const dateInput = screen.getByLabelText("Date", { selector: "#date" });
+    expect(dateInput.value).toBe("2024-06-03");
+    vi.useRealTimers();
+  });
+
+  it("should not update the date when an invalid relative time is entered", async () => {
+    render(<App />);
+    const relativeTimeInput = screen.getByLabelText("Relative");
+    fireEvent.change(relativeTimeInput, { target: { value: "invalid time" } });
+    fireEvent.blur(relativeTimeInput);
+    const dateInput = screen.getByLabelText("Date", { selector: "#date" });
+    expect(dateInput.value).toBe("2024-06-05");
+  });
+
+  it("should update the time when the meridian is changed to AM", async () => {
+    render(<App />);
+    const meridianInput = screen.getByLabelText("Meridian");
+    fireEvent.change(meridianInput, { target: { value: "AM" } });
+    const timeInput = screen.getByLabelText("Time", { selector: "#time" });
+    expect(timeInput.value).toBe("06:53");
+  });
+
+  it("should update the time when the meridian is changed to PM", async () => {
+    render(<App />);
+    const meridianInput = screen.getByLabelText("Meridian");
+    fireEvent.change(meridianInput, { target: { value: "PM" } });
+    const timeInput = screen.getByLabelText("Time", { selector: "#time" });
+    expect(timeInput.value).toBe("18:53");
+  });
+
+  it("should update the date when the day of the week is changed", async () => {
+    render(<App />);
+    const dayOfWeekInput = screen.getByLabelText("Day of Week");
+    fireEvent.change(dayOfWeekInput, { target: { value: "Friday" } });
+    const dateInput = screen.getByLabelText("Date", { selector: "#date" });
+    expect(dateInput.value).toBe("2024-06-07");
   });
 });
