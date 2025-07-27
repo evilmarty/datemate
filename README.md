@@ -1,4 +1,4 @@
-# ![Date Mate](assets/logo.svg)
+# Date Mate
 
 A simple date helper web app. Visit https://marty.zalega.me/datemate.
 
